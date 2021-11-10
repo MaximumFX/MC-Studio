@@ -1,0 +1,87 @@
+{
+	"name": "mc-studio",
+	"version": "0.1.0",
+	"private": true,
+	"description": "A tool to help you edit and create i.e. datapacks for Minecraft",
+	"author": {
+		"name": "Max de Groot",
+		"email": "max@maximumfx.nl",
+		"url": "https://maximumfx.nl/"
+	},
+	"homepage": "https://mc.maximumfx.nl/",
+	"bugs": {
+		"url": "https://github.com/MaximumFX/MC-Studio/issues"
+	},
+	"scripts": {
+		"serve": "vue-cli-service serve",
+		"build": "vue-cli-service build",
+		"lint": "vue-cli-service lint",
+		"electron:build": "vue-cli-service electron:build",
+		"electron:serve": "vue-cli-service electron:serve",
+		"dist": "electron-builder",
+		"pack": "electron-builder --dir",
+		"postinstall": "electron-builder install-app-deps",
+		"postuninstall": "electron-builder install-app-deps"
+	},
+	"main": "background.js",
+	"dependencies": {
+		"@fortawesome/fontawesome-pro": "^5.15.3",
+		"@popperjs/core": "^2.9.1",
+		"bootstrap": "^5.0.0-beta3",
+		"capitalize": "^2.0.3",
+		"core-js": "^3.6.5",
+		"dateformat": "^5.0.2",
+		"filesize": "^8.0.6",
+		"geolib": "^3.3.1",
+		"jszip": "^3.7.1",
+		"node-gzip": "^1.1.2",
+		"prismarine-nbt": "^1.5.0",
+		"uuid": "^3.4.0",
+		"vue": "^3.0.0",
+		"vue-router": "^4.0.5",
+		"xmldom": "^0.5.0"
+	},
+	"devDependencies": {
+		"@types/electron-devtools-installer": "^2.2.0",
+		"@typescript-eslint/eslint-plugin": "^4.18.0",
+		"@typescript-eslint/parser": "^4.18.0",
+		"@vue/cli-plugin-babel": "~4.5.0",
+		"@vue/cli-plugin-eslint": "~4.5.0",
+		"@vue/cli-plugin-typescript": "~4.5.0",
+		"@vue/cli-service": "~4.5.0",
+		"@vue/compiler-sfc": "^3.0.0",
+		"@vue/eslint-config-typescript": "^7.0.0",
+		"babel-eslint": "^10.1.0",
+		"electron": "^11.4.1",
+		"electron-builder": "^22.13.1",
+		"electron-devtools-installer": "^3.1.0",
+		"eslint": "^6.7.2",
+		"eslint-plugin-vue": "^7.0.0",
+		"three": "^0.127.0",
+		"typescript": "~4.1.5",
+		"vue-cli-plugin-electron-builder": "~2.0.0"
+	},
+	"eslintConfig": {
+		"root": true,
+		"env": {
+			"node": true
+		},
+		"extends": [
+			"plugin:vue/vue3-essential",
+			"eslint:recommended",
+			"@vue/typescript"
+		],
+		"parserOptions": {
+			"parser": "@typescript-eslint/parser"
+		},
+		"rules": {
+			"no-prototype-builtins": "off",
+			"vue/no-unused-components": "off"
+		}
+	},
+	"browserslist": [
+		"> 1%",
+		"last 2 versions",
+		"not dead"
+	]
+}
