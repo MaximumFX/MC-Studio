@@ -114,6 +114,9 @@ h1, h2, h3, h4, h5, h6 {
 	background: var(--secondary);
 	border-radius: 0;
 }
+::-webkit-scrollbar-corner {
+	background: var(--secondary);
+}
 
 /* Page Scrolling */
 main {
