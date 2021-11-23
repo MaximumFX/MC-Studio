@@ -71,7 +71,7 @@ export default class DimensionType {
 		has_skylight: Validation.boolean(),
 		has_ceiling: Validation.boolean(),
 		ultrawarm: Validation.boolean(),
-		fixed_time: Validation.int(true)
+		fixed_time: Validation.int(true, 0, 24000)
 	})
 	getStructure = () => DimensionType.getStructure()
 
