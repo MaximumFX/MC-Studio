@@ -3,7 +3,7 @@
 		<nav class="navbar navbar-dark bg-mcs-secondary">
 			<div class="container-fluid">
 			<span class="navbar-brand mb-0 fw-bold">
-				<img src="@/assets/images/cog.png" alt="" width="32" height="32" class="me-1">
+				<img src="@/assets/images/icon_16x16@2x.png" alt="" width="32" height="32" class="me-1">
 				MC Studio
 			</span>
 			</div>
