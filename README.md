@@ -1,24 +1,27 @@
 # MC Studio
 
-## Project setup
-```
-npm install
-```
+## Progress
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+### OpenStreetMap Exporter
+**Todo:**
+* Add configuration
+* Add slicing into multiple schematics
 
-### Compiles and minifies for production
-```
-npm run build
-```
+### NBT Editor
+**Todo:**
+* The editing part
+* Save edited files
+* Create new file
 
-### Lints and fixes files
-```
-npm run lint
-```
+### Schematic Viewer
+**Todo:**
+* Fix some broken models
+* Add 3D viewer settings
+* Add render functionality
+* Add [LGL Tracer](https://lgltracer.com) renderer
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### Worldgen
+**Todo:**
+* Exporting
+* Editing data
+* So so much more
