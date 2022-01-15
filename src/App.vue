@@ -1,4 +1,5 @@
 <template>
+	<ControlBar/>
 	<router-view/>
 	<AppProgress/>
 </template>
@@ -65,6 +66,10 @@ export default {
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap');
 
 :root {
+	--title-bar-height: 28px;
+	--border-size: 2px;
+	--title-bar: calc(var(--title-bar-height) + var(--border-size));
+
 	--text: #fff;
 	--border: #888;
 	--bg: #333;
