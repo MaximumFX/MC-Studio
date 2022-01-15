@@ -30,7 +30,6 @@ export const getMenu = (path = '/', page = 'home', events) =>
 		// 		isMac ? { role: 'close' } : { role: 'quit' }
 		// 	]
 		// },
-		{ role: 'editMenu' },
 		{
 			id: 'worldgen',
 			label: 'Worldgen',
@@ -47,17 +46,6 @@ export const getMenu = (path = '/', page = 'home', events) =>
 					enabled: path === '/custom-terrain'
 				},
 				{
-					label: 'Save datapack...',
-					accelerator: 'CmdOrCtrl+S',
-					click: () => {
-						console.log('save')
-						if (events.activePage === 'custom-terrain') {
-							events.send('accelerator', 'save')
-						}
-					},
-					enabled: path.startsWith('/custom-terrain/editor')
-				},
-				{
 					label: 'Export datapack...',
 					accelerator: 'CmdOrCtrl+E',
 					click: () => {
@@ -68,9 +56,22 @@ export const getMenu = (path = '/', page = 'home', events) =>
 					},
 					enabled: path.startsWith('/custom-terrain/editor')
 				},
+				{ type: 'separator' },
+				{
+					label: 'Save file...',
+					accelerator: 'CmdOrCtrl+S',
+					click: () => {
+						console.log('save')
+						if (events.activePage === 'custom-terrain') {
+							events.send('accelerator', 'save')
+						}
+					},
+					enabled: page === 'custom-terrain/file'
+				},
 			],
-			visible: page === 'custom-terrain'
+			visible: page.startsWith('custom-terrain')
 		},
+		{ role: 'editMenu' },
 		{ role: 'windowMenu' },
 		{
 			role: 'help',
@@ -84,7 +85,5 @@ export const getMenu = (path = '/', page = 'home', events) =>
 				}
 			]
 		},
-		//TODO tmp
-		// ...(process.env.NODE_ENV === 'production' ? [] : [{ role: 'viewMenu' }])
-		{ role: 'viewMenu' }
+		...(process.env.NODE_ENV === 'development' || process.argv.includes('--dev')) ? [{ role: 'viewMenu' }] : []
 	])
