@@ -7,7 +7,7 @@ import Events from './js/events'
 import {getMenu} from "./js/menu"
 import { getRouteForFile } from './js/path'
 import path from "path";
-import {main} from "@popperjs/core"
+import {Question} from "@/js/electron/Dialogs";
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -54,13 +54,8 @@ async function createWindow(file?: string) {
 		if (!events.saved && !overrideClose) {
 			e.preventDefault()
 			dialog.showMessageBox(mainWindow,
-				{
-					type: 'question',
-					buttons: ['Yes', 'No'],
-					cancelId: 1,
-					title: 'Confirm',
-					message: 'There are unsaved changes. Are you sure you want to quit?'
-				}
+				new Question('There are unsaved changes. Are you sure you want to quit?', 'Confirm',
+					['Yes', 'No'], 1)
 			).then(choice => {
 				if (choice.response === 0) {
 					overrideClose = true
