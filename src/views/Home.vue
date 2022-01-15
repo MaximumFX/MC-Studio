@@ -20,9 +20,9 @@
 							class="card-thumbnail ratio ratio-16x9"
 							:style="{'background-image': `url('${el.backgroundImage}')`}"
 						></div>
-						<div :class="['card-body', el.link ? '' : 'text-muted']">
+						<div :class="['card-body', el.link && el.enabled ? '' : 'text-muted']">
 							<h5 class="card-title">
-								<router-link v-if="el.link" :to="el.link" class="stretched-link text-decoration-none text-white">
+								<router-link v-if="el.link && el.enabled" :to="el.link" class="stretched-link text-decoration-none text-white">
 									{{ el.name }}
 								</router-link>
 								<span v-else>{{ el.name }}</span>
@@ -49,9 +49,13 @@
 </template>
 
 <script>
+import {ipcRenderer} from "electron";
+import {EventList} from "@/js/events";
+
 export default {
 	name: "Home",
 	data() {
+		const isDevelopment = ipcRenderer.sendSync(EventList.isDevelopment)
 		return {
 			items: [
 				{
@@ -79,25 +83,8 @@ export default {
 					name: 'Worldgen',
 					backgroundImage: 'https://external-preview.redd.it/hq0k-wDNgFKDTYqpNu_LyYMUADru8V_Ms7aLL3WeMJ4.jpg?auto=webp&s=b5f39df155e057432de3878710787b54f99f2d11',
 					link: '/custom-terrain',
-					status: '50% Finished'
-				},
-				{
-					name: 'NBT Editor',//TODO NBT Explorer?
-					backgroundImage: 'https://cmsminecraftshop.com/promo/NBTExplorer.png',
-					link: '/nbt-explorer',
-					status: '70% Finished'
-				},
-				{
-					name: 'Schematic viewer',
-					backgroundImage: 'https://ephtracy.github.io/image/snap2016-03-07-02-53-23.png',
-					link: '/schematic-viewer',
-					status: '40% Finished'
-				},
-				{
-					name: 'OpenStreetMap Exporter',
-					backgroundImage: 'https://miro.medium.com/max/1400/1*cX1Ve9_YQ2fQwjgA04yZ-g.png',
-					link: '/osm-exporter',
-					status: '50% Finished'
+					status: '35% Finished',
+					enabled: isDevelopment,
 				},
 			]
 		}
