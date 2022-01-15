@@ -5,12 +5,9 @@ import {EventList} from "@/js/events";
 import Home from "@/views/Home"
 import SchematicViewer from "@/views/SchematicViewer"
 import OSMExporter from "@/views/OSMExporter"
-import CustomTerrain from "@/views/CustomTerrain"
-import CustomTerrainEditor from "@/views/CustomTerrainEditor";
-import CTEHome from "@/views/CustomTerrainEditor/Home";
-import CTENamespace from "@/views/CustomTerrainEditor/Namespace";
-import NBTExplorerHome from "@/views/NBTExplorerHome";
-import NBTExplorer from "@/views/NBTExplorer"
+import NBTEditorHome from "@/views/NBTEditorHome";
+import NBTEditor from "@/views/NBTEditor"
+import customTerrainRouter from "@/router/custom-terrain";
 
 const routes = [
 	{
@@ -22,19 +19,20 @@ const routes = [
 		}
 	},
 	{
-		path: '/nbt-explorer',
-		name: 'NBT Editor',
-		component: NBTExplorerHome,
+		path: '/nbt-editor',
+		name: 'NBT Editor Home',
+		component: NBTEditorHome,
 		meta: {
-			page: 'nbt-explorer'
+			page: 'nbt-editor',
+			name: 'NBT Editor'
 		}
 	},
 	{
-		path: '/nbt-explorer/editor',
-		name: 'NBT Explorer Editor',
-		component: NBTExplorer,
+		path: '/nbt-editor/editor',
+		name: 'NBT Editor',
+		component: NBTEditor,
 		meta: {
-			page: 'nbt-explorer',
+			page: 'nbt-editor',
 			name: 'NBT Editor'
 		}
 	},

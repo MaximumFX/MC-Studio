@@ -5,7 +5,7 @@
 				<div class="navbar-expand" id="navbarNav">
 					<ul class="navbar-nav">
 						<li class="nav-item">
-							<router-link to="/nbt-explorer" class="nav-link active"><i class="fas fa-chevron-left"></i> Close</router-link>
+							<router-link to="/nbt-editor" class="nav-link active"><i class="fas fa-chevron-left"></i> Close</router-link>
 						</li>
 					</ul>
 				</div>
@@ -13,7 +13,7 @@
 					<div class="form-check">
 						<input v-model="showRaw" class="form-check-input" type="checkbox" value="" id="showRaw">
 						<label class="form-check-label" for="showRaw">
-							Show raw data
+							Show compiled JSON
 						</label>
 					</div>
 				</form>
@@ -31,7 +31,7 @@
 				</div>
 				<div v-else-if="$route.query.hasOwnProperty('file')" class="row justify-content-center align-items-center h-100">
 					<div class="col-auto">
-						<p>Loading...</p>
+						<Loader/>
 					</div>
 				</div>
 			</div>
@@ -50,10 +50,12 @@ import {config, setState} from "@/js/state"
 import path from "path";
 import {EventList} from "@/js/events";
 import SyntaxHighlight from "@/components/SyntaxHighlight";
+import Loader from "@/components/Loader";
 
 export default {
-	name: "NBTExplorer",
+	name: "NBTEditor",
 	components: {
+		Loader,
 		SyntaxHighlight,
 		NBTChangeValueModal,
 		NBTView
@@ -71,7 +73,7 @@ export default {
 			this.data = parsed
 
 			setState('nbtOpenFile', { parsed, type })
-			document.title = '[' + path.basename(file) + '] NBT Editor - MC Studio'
+			this.$store.commit('setTitle', '[' + path.basename(file) + '] NBT Editor')
 			console.log('JSON serialized:', parsed, type)
 
 			// Add to recent

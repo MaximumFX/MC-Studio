@@ -12,14 +12,21 @@
 			</div>
 		</nav>
 		<section>
-			<div class="container-fluid gx-4 h-100">
-				<div class="row gx-4 h-100">
+			<div class="container-fluid h-100">
+				<div class="row h-100">
 					<div class="col-3 py-3 bg-mcs-secondary">
 						<h3 class="mb-3">NBT Editor</h3>
 						<button class="btn btn-outline-success d-block w-100" type="button" disabled>New</button>
 <!--						todo add template-->
 						<p class="text-muted text-center"><small>Coming soon</small></p>
 						<button class="btn btn-success d-block w-100" type="button" @click="openFile">Open</button>
+						<hr>
+						<h4 class="text-warning"><i class="far fa-construction"></i> Todo</h4>
+						<ul>
+							<li>Edit values</li>
+							<li>Save edited files</li>
+							<li>Create new file</li>
+						</ul>
 					</div>
 					<div class="col-9 h-100 overflow-y-auto">
 						<div v-if="recent.length" class="py-3">
@@ -35,18 +42,18 @@
 								<thead>
 									<tr>
 										<th scope="col">Name</th>
-										<th scope="col">Last modified</th>
+										<th scope="col">Last opened</th>
 										<th scope="col">Size</th>
 <!--										<th scope="col"></th>-->
 									</tr>
 								</thead>
 								<tbody>
-									<tr v-for="(file, i) in recent" :key="i" @click="$router.push({ path: '/nbt-explorer/editor', query: { file: file.path } })">
+									<tr v-for="(file, i) in recent" :key="i" @click="$router.push({ path: '/nbt-editor/editor', query: { file: file.path } })">
 										<td>
 											<p class="mb-1">{{ file.name }}</p>
 											<p class="m-0 text-truncate text-muted small" :title="file.path">{{ file.path }}</p>
 										</td>
-										<td>{{ file.lastModified }}</td>
+										<td>{{ file.lastOpened }}</td>
 										<td>{{ file.size }}</td>
 <!--										<td>...</td>-->
 									</tr>
@@ -75,7 +82,7 @@ import path from "path";
 import fs from "fs";
 
 export default {
-	name: "NBTExplorerHome",
+	name: "NBTEditorHome",
 	data() {
 		return {
 			recent: []
@@ -86,7 +93,7 @@ export default {
 			ipcRenderer.invoke('openFileDialog').then(async result => {
 				if (result.canceled !== true) {
 					console.log('res',result)
-					this.$router.push({ path: '/nbt-explorer/editor', query: { file: result.filePaths[0] } })
+					this.$router.push({ path: '/nbt-editor/editor', query: { file: result.filePaths[0] } })
 				}
 			}).catch(err => {
 				console.error(err)
@@ -102,7 +109,7 @@ export default {
 			return {
 				path: r,
 				name: path.basename(r),
-				lastModified: dateFormat(new Date(stats.mtime), "d mmmm yyyy HH:MM:ss"),
+				lastOpened: dateFormat(new Date(stats.mtime), "d mmmm yyyy HH:MM:ss"),
 				size: fileSize(stats.size)
 			}
 		}).reverse()
@@ -111,9 +118,6 @@ export default {
 </script>
 
 <style scoped>
-.container-fluid.gx-4 {
-	--bs-gutter-x: 1rem;
-}
 table {
 	table-layout: fixed;
 }
