@@ -14,7 +14,7 @@
 			</div>
 		</div>
 		<div class="card-body collapse show" ref="collapse">
-			<FormBuilderG :form="val.elements"/>
+			<FormBuilder :form="val.elements"/>
 		</div>
 	</div>
 </template>

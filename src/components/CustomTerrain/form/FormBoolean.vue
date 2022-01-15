@@ -1,6 +1,6 @@
 <template>
 	<div class="form-check">
-		<input class="form-check-input" type="checkbox" :value="val.value" :id="val.key">
+		<input class="form-check-input" type="checkbox" v-model="value" :id="val.key">
 		<label class="form-check-label text-capitalize" :for="val.key">
 			{{ val.key.replace(/_/g, ' ') }}{{ val.validation.optional ? '' : '*' }}
 		</label>
@@ -8,17 +8,11 @@
 </template>
 
 <script>
-import Validation from "@/js/CustomTerrain/Validation.ts";
+import FormItem from "@/mixins/CustomTerrain/FormItem";
 
 export default {
 	name: "FormBoolean",
-	props: {
-		val: {
-			key: String,
-			value: Boolean,
-			validation: Validation
-		}
-	}
+	mixins: [FormItem],
 }
 </script>
 

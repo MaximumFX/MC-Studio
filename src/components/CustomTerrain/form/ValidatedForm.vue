@@ -1,10 +1,10 @@
 <template>
 	<div v-if="structure == null">No options</div>
 	<div v-else-if="form">
-		<FormBuilderG :form="form.elements"/>
+		<FormBuilder :form="form.elements"/>
 	</div>
 	<div v-else>
-		Loading...
+		<Loader class="mx-auto"/>
 		{{structure}}
 	</div>
 </template>
@@ -12,10 +12,11 @@
 <script>
 import Validation, {ValidationType} from "@/js/CustomTerrain/Validation.ts";
 import FormBuilder from "@/components/CustomTerrain/form/FormBuilder";
+import Loader from "@/components/Loader";
 
 export default {
 	name: "ValidatedForm",
-	components: {FormBuilder},
+	components: {Loader, FormBuilder},
 	props: {
 		data: Object,
 		structure: Object
@@ -25,10 +26,12 @@ export default {
 			tsdata: undefined,
 			form: undefined,
 
+			isBuilt: false,
 			vdt: ValidationType
 		}
 	},
 	created() {
+		this.isBuilt = false
 		if (this.data && this.tsdata === undefined)
 			this.tsdata = this.data
 		console.log('[ValidatedForm]', this.tsdata)
@@ -39,16 +42,23 @@ export default {
 			this.tsdata = this.data
 			this.build()
 		},
-		data() {
-			if (this.tsdata === undefined)
-				this.tsdata = this.data
-		},
-		tsdata: {
-			handler(val) {
-				this.$emit('update:data', val)
+		// tsdata: {
+		// 	handler(val) {
+		// 		this.$emit('update:data', val)
+		// 	},
+		// 	deep: true
+		// },
+		form: {
+			handler(value) {
+				if (this.isBuilt) {
+					const data = {}
+					value.elements.forEach(e => data[e.key] = e.value)
+					this.$emit('update:data', data)
+					console.log('[Validatedform form]', data)
+				}
 			},
 			deep: true
-		}
+		},
 	},
 	methods: {
 		build() {
@@ -62,6 +72,7 @@ export default {
 					elements: Validation.getElements(structure, this.tsdata)
 				}
 				console.log('[ValidatedForm] Built', this.form)
+				this.isBuilt = true
 			}
 		},
 	}

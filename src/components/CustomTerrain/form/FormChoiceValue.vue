@@ -2,11 +2,7 @@
 	<div class="row">
 		<label class="col-auto col-form-label text-capitalize">{{ name }}{{ val.validation.optional ? '' : '*'}}</label>
 		<div class="col">
-			<input
-				type="number" class="form-control" :placeholder="val.key"
-				:value="value" :min="val.validation.options.minSize" :max="val.validation.options.maxSize"
-				step="0.1"
-			>
+			<input type="text" class="form-control" :placeholder="val.key" :aria-label="val.key" :aria-describedby="val.key" :value="val.value" disabled>
 		</div>
 	</div>
 </template>
@@ -15,13 +11,13 @@
 import FormItem from "@/mixins/CustomTerrain/FormItem";
 
 export default {
-	name: "FormFloat",
+	name: "FormChoiceValue",
 	mixins: [FormItem],
 }
 </script>
 
 <style scoped>
-label {
-	color: var(--syntax-float);
-}
+/*label {*/
+/*	color: var(--syntax-string);*/
+/*}*/
 </style>

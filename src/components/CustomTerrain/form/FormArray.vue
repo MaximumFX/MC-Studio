@@ -3,7 +3,7 @@
 		<div class="card-header">
 			<div class="row g-3 align-items-center">
 				<div class="col">
-					<h6 class="text-capitalize m-0">{{ val.key.replace(/_/g, ' ') }}{{ val.validation.optional ? '' : '*'}}</h6>
+					<h6 class="text-capitalize m-0">{{ name }}{{ val.validation.optional ? '' : '*'}} ({{ items.length }})</h6>
 				</div>
 				<div class="col-auto">
 					<button
@@ -26,19 +26,15 @@
 </template>
 
 <script>
-import Validation, {ValidationType} from "@/js/CustomTerrain/Validation.ts";
+import {ValidationType} from "@/js/CustomTerrain/Validation.ts";
 import {Collapse} from 'bootstrap'
 import FormArrayItem from "@/components/CustomTerrain/form/FormArrayItem";
+import FormItem from "@/mixins/CustomTerrain/FormItem";
+
 export default {
 	name: "FormArray",
+	mixins: [FormItem],
 	components: {FormArrayItem},
-	props: {
-		val: {
-			key: String,
-			value: Array,
-			validation: Validation
-		}
-	},
 	data() {
 		return {
 			vdt: ValidationType,

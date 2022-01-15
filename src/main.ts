@@ -12,6 +12,6 @@ const app = createApp(App)
 app.use(router)
 app.use(store)
 
-app.component('FormBuilderG', FormBuilder)
+app.component('FormBuilder', FormBuilder)
 
 app.mount('#app')

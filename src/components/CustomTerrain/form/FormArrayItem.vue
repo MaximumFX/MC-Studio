@@ -1,14 +1,16 @@
 <template>
-	<div class="card card-warning">
+	<div class="card">
 		<div class="card-header">
 			<div class="row g-3 align-items-center">
 				<div class="col">
 					<h6 v-if="child.length > 1" class="text-capitalize m-0">{{ val.validation.options.objectName.replace(/_/g, ' ') }}</h6>
-					<FormString v-else-if="child[0].validation.type === vdt.STRING" :val="child[0]"/>
-					<FormBoolean v-else-if="child[0].validation.type === vdt.BOOLEAN" :val="child[0]"/>
-					<FormInt v-else-if="child[0].validation.type === vdt.INT" :val="child[0]"/>
-					<FormFloat v-else-if="child[0].validation.type === vdt.FLOAT" :val="child[0]"/>
-					<FormSelect v-else-if="child[0].validation.type === vdt.SELECT" :val="child[0]"/>
+					<component
+						v-bind:is="type"
+						v-bind="{ val: child[0] }"
+						v-on="{
+				'update:value': changeValue,
+			}"
+					/>
 				</div>
 
 				<div class="col-auto">
@@ -26,7 +28,7 @@
 			</div>
 		</div>
 		<div class="card-body collapse" v-if="child.length > 1" ref="collapse">
-			<FormBuilderG :form="child"/>
+			<FormBuilder :form="child"/>
 		</div>
 	</div>
 </template>
@@ -34,15 +36,25 @@
 <script>
 import Validation, {ValidationType} from "@/js/CustomTerrain/Validation.ts";
 import {Collapse} from 'bootstrap'
+import FormSection from "@/components/CustomTerrain/form/FormSection";
 import FormString from "@/components/CustomTerrain/form/FormString";
 import FormBoolean from "@/components/CustomTerrain/form/FormBoolean";
 import FormInt from "@/components/CustomTerrain/form/FormInt";
-import FormFloat from "@/components/CustomTerrain/form/FormFloat";
 import FormSelect from "@/components/CustomTerrain/form/FormSelect";
+import FormFloat from "@/components/CustomTerrain/form/FormFloat";
+import FormChoice from "@/components/CustomTerrain/form/FormChoice";
+import FormChoiceValue from "@/components/CustomTerrain/form/FormChoiceValue";
+import FormArray from "@/components/CustomTerrain/form/FormArray";
+import FormEnum from "@/components/CustomTerrain/form/FormEnum";
+import FormColor from "@/components/CustomTerrain/form/FormColor";
+import FormDynamicSelect from "@/components/CustomTerrain/form/FormDynamicSelect";
+import FormBuilder from "@/js/CustomTerrain/FormBuilder";
 
 export default {
 	name: "FormArrayItem",
-	components: {FormSelect, FormFloat, FormInt, FormBoolean, FormString},
+	components: {
+		FormDynamicSelect,
+		FormColor, FormEnum, FormArray, FormChoice, FormChoiceValue, FormFloat, FormSelect, FormInt, FormBoolean, FormString, FormSection},
 	props: {
 		val: {
 			// key: String,//todo key toevoegen
@@ -68,9 +80,15 @@ export default {
 		toggle() {
 			this.collapse.toggle()
 			this.collapsed = !this.collapsed
+		},
+		changeValue(value) {
+			console.log('[FormArrayItem changeValue]', this.form.find(a => a.key === value.key), value)
 		}
 	},
 	computed: {
+		type() {
+			return FormBuilder.getComponentName(this.child[0])
+		},
 		child() {
 			const tmp = {
 				obj: this.val.validation.options.arrayObject,

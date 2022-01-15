@@ -30,7 +30,7 @@
 <!--			<div class="mb-1" v-for="e in selectedChoice.elements" :key="e.key">-->
 <!--				{{ e }}<br><br>-->
 <!--			</div>-->
-			<FormBuilderG :form="selectedChoice.elements"/>
+			<FormBuilder :form="selectedChoice.elements"/>
 		</div>
 	</div>
 </template>
@@ -41,13 +41,15 @@ import {Collapse} from "bootstrap";
 
 export default {
 	name: "FormChoice",
-	components: {},
 	props: {
 		val: {
 			key: String,
 			value: Object,
 			validation: Validation
 		}
+	},
+	created() {
+		console.log(this.val)
 	},
 	data() {
 		return {
