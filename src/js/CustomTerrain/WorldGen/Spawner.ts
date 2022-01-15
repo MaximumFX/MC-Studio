@@ -1,4 +1,4 @@
-interface SpawnerJSON {
+export interface SpawnerJSON {
 	type: string
 	weight: number
 	minCount: number

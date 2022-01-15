@@ -1,6 +1,16 @@
 // BACKEND
-export enum DynamicSelectType {
-	BIOME
+export enum CTFileType {
+	Dimension = 'Dimension',
+	DimensionType = 'DimensionType',
+	Biome = 'Biome',
+	ConfiguredCarver = 'ConfiguredCarver',
+	ConfiguredFeature = 'ConfiguredFeature',
+	ConfiguredStructureFeature = 'ConfiguredStructureFeature',
+	PlacedFeature = 'PlacedFeature',
+	Noise = 'Noise',
+	NoiseSettings = 'NoiseSettings',
+	ProcessorList = 'ProcessorList',
+	TemplatePool = 'TemplatePool'
 }
 
 
@@ -17,9 +27,10 @@ export enum Infiniburn {
 }
 
 // BIOME
-export enum BiomeSourceType {//TODO add the_end
+export enum BiomeSourceType {
 	VANILLA_LAYERED = 'minecraft:vanilla_layered',
 	MULTI_NOISE = 'minecraft:multi_noise',
+	THE_END = 'minecraft:the_end',
 	FIXED = 'minecraft:fixed',
 	CHECKERBOARD = 'minecraft:checkerboard'
 }
@@ -34,27 +45,44 @@ export enum BiomeTemperatureModifier {
 }
 export enum BiomeCategory {
 	NONE = 'none',
-	TAIGA = 'taiga',
+	BEACH = 'beach',
+	DESERT = 'desert',
 	EXTREME_HILLS = 'extreme_hills',
+	FOREST = 'forest',
+	ICY = 'icy',
 	JUNGLE = 'jungle',
 	MESA = 'mesa',
-	PLAINS = 'plains',
-	SAVANNA = 'savanna',
-	ICY = 'icy',
-	BEACH = 'beach',
-	FOREST = 'forest',
-	OCEAN = 'ocean',
-	DESERT = 'desert',
-	RIVER = 'river',
-	SWAMP = 'swamp',
+	MOUNTAIN = 'mountain',
 	MUSHROOM = 'mushroom',
-	THE_END = 'the_end',
 	NETHER = 'nether',
+	OCEAN = 'ocean',
+	PLAINS = 'plains',
+	RIVER = 'river',
+	SAVANNA = 'savanna',
+	SWAMP = 'swamp',
+	TAIGA = 'taiga',
+	THE_END = 'the_end',
+	UNDERGROUND = 'underground'
 }
 export enum BiomeGrassColorModifier {
 	NONE = 'none',
 	DARK_FOREST = 'dark_forest',
 	SWAMP = 'swamp'
+}
+
+// Configured Features
+export enum FeatureType {
+	BAMBOO = 'Bamboo',
+	BASALT_COLUMNS = 'BasaltColumns',
+	BLOCK_COLUMN = 'BlockColumn',
+	BLOCK_PILE = 'BlockPile',
+}
+
+// Placed Features
+export enum CarvingMask {
+	NONE = 'none',
+	LIQUID = 'liquid',
+	AIR = 'air'
 }
 
 // PROVIDERS

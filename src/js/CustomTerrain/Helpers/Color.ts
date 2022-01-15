@@ -1,15 +1,17 @@
 interface ColorInterface {
-	decimal: number
-	hex: string
+	decimal: number | undefined
+	hex: string | undefined
 }
 
 export default class Color {
-	decimal: number
-	hex: string
-	constructor(options: ColorInterface) {
+	decimal: number | undefined
+	hex: string | undefined
+	constructor(options: ColorInterface = {decimal: undefined, hex: undefined}) {
 		this.decimal = options.decimal
-		this.hex = options.hex.padStart(6, '0')
+		this.hex = options.hex?.padStart(6, '0')
 	}
+
+	getHex = () => '#' + this.hex
 
 	static fromDecimal(decimal: number) {
 		return new Color({
@@ -24,4 +26,7 @@ export default class Color {
 			decimal: parseInt(hex, 16)
 		})
 	}
+
+	// Formatting
+	toJSON = () => this.decimal
 }

@@ -1,5 +1,6 @@
 import Block, {BlockInterface} from "@/js/CustomTerrain/Helpers/Block";
 import {BlockStateProviderType} from "@/js/CustomTerrain/Helpers/Enum";
+import Validation from "@/js/CustomTerrain/Validation";
 
 interface BlockStateProviderInterface {
 	type: BlockStateProviderType
@@ -25,6 +26,10 @@ export default class BlockStateProvider {
 			this.entries = json.entries.map(e => new WeightedStateProvider(new Block(e.data as BlockInterface), e.weight))//todo
 		}
 	}
+
+	static getStructure = () => ({//todo
+		type: Validation.choiceValue(),
+	})
 }
 
 class WeightedStateProvider {

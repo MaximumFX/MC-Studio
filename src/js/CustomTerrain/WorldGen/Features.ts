@@ -1,13 +1,12 @@
-// @ts-ignore
-// TODO
 import IntProvider from "@/js/CustomTerrain/Helpers/IntProvider";
-// @ts-ignore
-// TODO
 import FloatProvider from "@/js/CustomTerrain/Helpers/FloatProvider";
 import {Decorator} from "@/js/CustomTerrain/WorldGen/Decorators";
 import Block from "@/js/CustomTerrain/Helpers/Block";
 import {BlockPlacer} from "@/js/CustomTerrain/WorldGen/Placers";
 import BlockStateProvider from "@/js/CustomTerrain/Helpers/BlockStateProvider";
+import {FeatureType} from "@/js/CustomTerrain/Helpers/Enum";
+import Validation, {Choice} from "@/js/CustomTerrain/Validation";
+import MinecraftData from "@/js/CustomTerrain/Helpers/MinecraftData";
 
 export interface FeatureJSON {
 	type: string
@@ -29,11 +28,11 @@ export class Feature {
 		else if (json.type === 'minecraft:basalt_columns') {
 			return new BasaltColumns(json.config)
 		}
+		else if (json.type === 'minecraft:block_column') {
+			return new BlockColumn(json.config)
+		}
 		else if (json.type === 'minecraft:block_pile') {
 			return new BlockPile(json.config)
-		}
-		else if (json.type === 'minecraft:decorated') {
-			return new Decorated(json.config)
 		}
 		else if (json.type === 'minecraft:delta_feature') {
 			return new DeltaFeature(json.config)
@@ -47,11 +46,8 @@ export class Feature {
 		else if (json.type === 'minecraft:end_gateway') {
 			return new EndGateway(json.config)
 		}
-		else if (json.type === 'minecraft:end_spike') {
+		else if(json.type === 'minecraft:end_spike') {
 			return new EndSpike(json.config)
-		}
-		else if (json.type === 'minecraft:fill_layer') {
-			return new FillLayer(json.config)
 		}
 		else if (json.type === 'minecraft:flower') {
 			return new Flower(json.config)
@@ -67,9 +63,6 @@ export class Feature {
 		}
 		else if (json.type === 'minecraft:glow_lichen') {
 			return new GlowLichen(json.config)
-		}
-		else if (json.type === 'minecraft:growing_plant') {
-			return new GrowingPlant(json.config)
 		}
 		else if (json.type === 'minecraft:huge_brown_mushroom') {
 			return new HugeBrownMushroom(json.config)
@@ -98,12 +91,6 @@ export class Feature {
 		else if (json.type === 'minecraft:netherrack_replace_blobs') {
 			return new NetherrackReplaceBlobs(json.config)
 		}
-		else if (json.type === 'minecraft:no_bonemeal_flower') {
-			return new NoBonemealFlower(json.config)
-		}
-		else if (json.type === 'minecraft:no_op') {
-			return new NoOp()
-		}
 		else if (json.type === 'minecraft:ore') {
 			return new Ore(json.config)
 		}
@@ -115,9 +102,6 @@ export class Feature {
 		}
 		else if (json.type === 'minecraft:random_selector') {
 			return new RandomSelector(json.config)
-		}
-		else if (json.type === 'minecraft:replace_single_block') {
-			return new ReplaceSingleBlock(json.config)
 		}
 		else if (json.type === 'minecraft:root_system') {
 			return new RootSystem(json.config)
@@ -137,14 +121,14 @@ export class Feature {
 		else if (json.type === 'minecraft:simple_random_selector') {
 			return new SimpleRandomSelector(json.config)
 		}
-		else if (json.type === 'minecraft:small_dripstone') {
-			return new SmallDripstone(json.config)
-		}
 		else if (json.type === 'minecraft:spring_feature') {
 			return new SpringFeature(json.config)
 		}
 		else if (json.type === 'minecraft:tree') {
 			return new Tree(json.config)
+		}
+		else if (json.type === 'minecraft:twisting_vines') {
+			return new TwistingVines(json.config)
 		}
 		else if (json.type === 'minecraft:underwater_magma') {
 			return new UnderwaterMagma(json.config)
@@ -156,13 +140,28 @@ export class Feature {
 			return new WaterloggedVegetationPatch(json.config)
 		}
 		else if (![
-			'minecraft:basalt_pillar', 'minecraft:blue_ice', 'minecraft:bonus_chest', 'minecraft:chorus_plant', 'minecraft:coral_claw',
-			'minecraft:coral_mushroom', 'minecraft:coral_tree', 'minecraft:desert_well', 'minecraft:end_island', 'minecraft:freeze_top_layer',
-			'minecraft:glowstone_blob', 'minecraft:ice_spike', 'minecraft:kelp', 'minecraft:monster_room', 'minecraft:twisting_vines',
-			'minecraft:vines', 'minecraft:void_start_platform', 'minecraft:weeping_vines'
+			'minecraft:basalt_pillar', 'minecraft:blue_ice', 'minecraft:bonus_chest', 'minecraft:chorus_plant',
+			'minecraft:desert_well', 'minecraft:end_island', 'minecraft:freeze_top_layer', 'minecraft:glowstone_blob',
+			'minecraft:ice_spike', 'minecraft:kelp', 'minecraft:monster_room', 'minecraft:vines', 'minecraft:void_start_platform',
+			'minecraft:weeping_vines'
 		].includes(json.type)) console.error('Undefined ConfiguredFeature type:', json)
 		return new Feature('minecraft:undefined')
 	}
+
+	static getStructure = () => ([
+		new Choice(FeatureType.BAMBOO, 'Bamboo', {probability: Validation.float()}),
+		new Choice(FeatureType.BASALT_COLUMNS, 'Basalt columns', {
+			reach: Validation.intProvider(false, true, 0, 3),
+			height: Validation.intProvider(false, true, 1, 10),
+		}),
+		new Choice(FeatureType.BLOCK_COLUMN, 'Block column', {//todo block column
+			reach: Validation.intProvider(false, true, 0, 3),
+			height: Validation.intProvider(false, true, 1, 10),
+		}),
+		new Choice(FeatureType.BLOCK_PILE, 'Block pile', {
+			height: Validation.object(false, BlockStateProvider.getStructure(), Validation.select(false, MinecraftData.Structures)),
+		}),
+	])
 }
 
 interface BlockTargets {
@@ -184,6 +183,11 @@ export class BasaltColumns extends Feature {
 		super('minecraft:basalt_columns')
 		this.reach = IntProvider.getOrInt(json.reach)//between 0 and 3
 		this.height = IntProvider.getOrInt(json.height)//between 1 and 10
+	}
+}
+export class BlockColumn extends Feature {//todo
+	constructor(json: any) {
+		super('minecraft:block_column')
 	}
 }
 export class BlockPile extends Feature {
@@ -329,7 +333,7 @@ export class Flower extends RandomPatch {
 }
 export class ForestRock extends Feature {
 	state: Block
-	
+
 	constructor(json: any) {
 		super('minecraft:forest_rock')
 		this.state = new Block(json.state)
@@ -341,7 +345,7 @@ export class Fossil extends Feature {//todo
 	fossil_processors: any
 	overlay_processors: any
 	max_empty_corners_allowed: any
-	
+
 	constructor(json: any) {
 		super('minecraft:fossil')
 		this.fossil_structures = json.fossil_structures
@@ -414,7 +418,7 @@ export class Geode extends Feature {//todo
 		if (json.hasOwnProperty('outer_wall_distance'))
 			this.outer_wall_distance = IntProvider.getOrInt(json.outer_wall_distance)
 		else this.outer_wall_distance = IntProvider.uniform(4, 5)
-		
+
 		if (json.hasOwnProperty('distribution_points'))
 			this.distribution_points = IntProvider.getOrInt(json.distribution_points)
 		else this.distribution_points = IntProvider.uniform(3, 4)
@@ -613,7 +617,7 @@ export class RandomSelector extends Feature {//todo
 }
 export class ReplaceSingleBlock extends Feature {
 	targets: BlockTargets[]
-	
+
 	constructor(json: any) {
 		super('minecraft:replace_single_block')
 		this.targets = json.targets.map((t: any) => ({
@@ -635,7 +639,7 @@ export class RootSystem extends Feature {//todo
 	root_state_provider: BlockStateProvider
 	hanging_root_state_provider: BlockStateProvider
 	feature: any
-	
+
 	constructor(json: any) {
 		super('minecraft:root_system')
 		this.required_vertical_space_for_tree = json.required_vertical_space_for_tree

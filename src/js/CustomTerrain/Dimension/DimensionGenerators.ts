@@ -1,7 +1,8 @@
 // @ts-ignore
 import Biome, {ValidateBiome} from "@/js/CustomTerrain/Dimension/Biome";
-import {BiomeSourceType} from "@/js/CustomTerrain/Helpers/Enum";
+import {BiomeSourceType, CTFileType} from "@/js/CustomTerrain/Helpers/Enum";
 import Validation, {Choice} from "@/js/CustomTerrain/Validation";
+import MinecraftData from "@/js/CustomTerrain/Helpers/MinecraftData";
 
 export class DimensionGenerator {
 	public type: string
@@ -9,18 +10,18 @@ export class DimensionGenerator {
 		this.type = type
 	}
 
-	getNew = (type: string): NoiseGenerator | FlatGenerator | DebugGenerator => {
-		if (type === 'minecraft:noise')
-			return new NoiseGenerator()
-		else if (type === 'minecraft:flat')
-			return new FlatGenerator()
-		else if (type === 'minecraft:debug')
-			return new DebugGenerator()
-		else throw new Error('[Dimension] Undefined Dimension generator type')
-	}
+	// static getNew = (type: string): NoiseGenerator | FlatGenerator | DebugGenerator => {
+	// 	if (type === 'minecraft:noise')
+	// 		return new NoiseGenerator()
+	// 	else if (type === 'minecraft:flat')
+	// 		return new FlatGenerator()
+	// 	else if (type === 'minecraft:debug')
+	// 		return new DebugGenerator()
+	// 	else throw new Error('[Dimension] Undefined Dimension generator type')
+	// }
 }
 
-interface BiomeSource {//todo
+interface BiomeSource {
 	seed: number
 	type: BiomeSourceType
 }
@@ -28,54 +29,19 @@ const ValidateBiomeSource = {
 	seed: Validation.int(),
 	type: Validation.choiceValue(),
 }
-interface BiomeSourceVanillaLayered extends BiomeSource {//todo
+interface BiomeSourceVanillaLayered extends BiomeSource {
 	large_biomes: boolean
-	legacy_biome_init_layer?: boolean
 }
 const ValidateBiomeSourceVanillaLayered = {
 	...ValidateBiomeSource,
 	large_biomes: Validation.boolean(),
-	legacy_biome_init_layer: Validation.string(true),
 }
 interface BiomeSourceMultiNoise extends BiomeSource {//todo
 	biomes: Biome[]
-	altitude_noise: {
-		firstOctave: number,
-		amplitudes: number[]
-	}
-	weirdness_noise: {
-		firstOctave: number,
-		amplitudes: number[]
-	}
-	temperature_noise: {
-		firstOctave: number,
-		amplitudes: number[]
-	}
-	humidity_noise: {
-		firstOctave: number,
-		amplitudes: number[]
-	}
-	preset?: any
 }
 const ValidateBiomeSourceMultiNoise = {
 	...ValidateBiomeSource,
 	biomes: Validation.array(false, ValidateBiome, 'Biome'),
-	altitude_noise: {
-		firstOctave: Validation.float(),
-		amplitudes: Validation.array(false, Validation.float(), 'Amplitude')
-	},
-	weirdness_noise: {
-		firstOctave: Validation.float(),
-		amplitudes: Validation.array(false, Validation.float(), 'Amplitude')
-	},
-	temperature_noise: {
-		firstOctave: Validation.float(),
-		amplitudes: Validation.array(false, Validation.float(), 'Amplitude')
-	},
-	humidity_noise: {
-		firstOctave: Validation.float(),
-		amplitudes: Validation.array(false, Validation.float(), 'Amplitude')
-	},
 }
 interface BiomeSourceFixed extends BiomeSource {//todo
 	biome: any
@@ -90,67 +56,40 @@ interface BiomeSourceCheckerboard extends BiomeSource {
 }
 const ValidateBiomeSourceCheckerboard = {
 	...ValidateBiomeSource,
-	biomes: Validation.array(false, ValidateBiome, 'Biome'),
-	scale: Validation.float(),//todo
+	biomes: Validation.array(false, Validation.dynamicSelect(false, CTFileType.Biome), 'Biome'),
+	scale: Validation.float(false, 0, 62)
 }
 
-export class NoiseGenerator extends DimensionGenerator {//todo
+export class NoiseGenerator extends DimensionGenerator {
 	seed: number
-	settings: object
+	settings: string //Noise Setting ID
 	biome_source: BiomeSourceVanillaLayered | BiomeSourceMultiNoise | BiomeSourceFixed | BiomeSourceCheckerboard
 
-	constructor(json: any = {
-		seed: 0,
-		biome_source: {
-			seed: 0,
-			type: Object.values(BiomeSourceType)[0]
-		}
-	}) {
+	constructor(json: any = {}) {
 		super(NoiseGenerator.getType())
 		this.seed = json.seed ?? 0
-		this.settings = json.settings
+		this.settings = json.settings ?? 'minecraft:overworld'
 		const biome_source: any = {
-			seed: json.biome_source.seed,
-			type: json.biome_source.type,
+			seed: json.biome_source.seed ?? 0,
+			type: json.biome_source.type ?? 'minecraft:multi_noise',
 		}
 
 		if (json.biome_source.type === BiomeSourceType.VANILLA_LAYERED) {
-			biome_source.large_biomes = json.biome_source.large_biomes
-			if (json.biome_source.hasOwnProperty('legacy_biome_init_layer'))
-				biome_source.legacy_biome_init_layer = json.biome_source.legacy_biome_init_layer
+			biome_source.large_biomes = json.biome_source.large_biomes ?? false
+			biome_source.biomes = json.biome_source.biomes ?? []
 		}
 
 		else if (json.biome_source.type === BiomeSourceType.MULTI_NOISE) {
-			if (json.biome_source.hasOwnProperty('biomes')) {
-				biome_source.biomes = json.biome_source.biomes as Biome[]
-				biome_source.altitude_noise = {
-					fistOctave: json.biome_source.altitude_noise.fistOctave ?? -7,
-					amplitudes: json.biome_source.altitude_noise.amplitudes ?? [1.0, 1.0],
-				}
-				biome_source.weirdness_noise = {
-					fistOctave: json.biome_source.weirdness_noise.fistOctave ?? -7,
-					amplitudes: json.biome_source.weirdness_noise.amplitudes ?? [1.0, 1.0],
-				}
-				biome_source.temperature_noise = {
-					fistOctave: json.biome_source.temperature_noise.fistOctave ?? -7,
-					amplitudes: json.biome_source.temperature_noise.amplitudes ?? [1.0, 1.0],
-				}
-				biome_source.humidity_noise = {
-					fistOctave: json.biome_source.humidity_noise.fistOctave ?? -7,
-					amplitudes: json.biome_source.humidity_noise.amplitudes ?? [1.0, 1.0],
-				}
-			}
-			else if (json.biome_source.hasOwnProperty('preset'))
-				biome_source.preset = json.biome_source.preset
+			biome_source.biomes = json.biome_source.biomes as Biome[] ?? []
 		}
 
 		else if (json.biome_source.type === BiomeSourceType.FIXED) {
-			biome_source.biome = json.biome_source.biome
+			biome_source.biome = json.biome_source.biome ?? 'minecraft:plains'
 		}
 
 		else if (json.biome_source.type === BiomeSourceType.CHECKERBOARD) {
-			biome_source.biomes = json.biome_source.biomes as Biome[]
-			biome_source.scale = json.biome_source.scale
+			biome_source.biomes = json.biome_source.biomes as Biome[] ?? []
+			biome_source.scale = json.biome_source.scale ?? 1
 		}
 
 		this.biome_source = biome_source
@@ -158,40 +97,63 @@ export class NoiseGenerator extends DimensionGenerator {//todo
 
 	static getType = () => 'minecraft:noise'
 	static getStructure = () => ({
+		type: Validation.choiceValue(),
 		seed: Validation.int(),
-		settings: Validation.select(false, [
-			'minecraft:overworld', 'minecraft:nether', 'minecraft:end'
-		]),
+		settings: Validation.dynamicSelect(false, CTFileType.NoiseSettings),
 		biome_source: Validation.choice(false, [
 			new Choice(BiomeSourceType.VANILLA_LAYERED, 'Vanilla Layered', ValidateBiomeSourceVanillaLayered),
 			new Choice(BiomeSourceType.MULTI_NOISE, 'Multi Noise', ValidateBiomeSourceMultiNoise),
 			new Choice(BiomeSourceType.FIXED, 'Fixed', ValidateBiomeSourceFixed),
+			new Choice(BiomeSourceType.THE_END, 'The End', null),
 			new Choice(BiomeSourceType.CHECKERBOARD, 'Checkerboard', ValidateBiomeSourceCheckerboard),
 		], 'type')
 	})
 	getStructure = () => NoiseGenerator.getStructure()
 }
 
-interface FlatGeneratorSettings {//todo
-	layers: []
+export interface FlatGeneratorSettings {//todo
+	layers: {
+		height: number
+		block: string
+	}[]
 	biome?: string
 	structures: {
 		stronghold: {
-			distance: number,
-			count: number,
-			spread: number,
+			distance: number
+			count: number
+			spread: number
 		},
-		structures: any,
+		structures: {
+			[key: string]: {
+				spacing: number
+				separation: number
+				salt: number
+			}
+		},
 	}
 	lakes?: boolean
 	features?: boolean
+}
+
+const ValidateFlatBiome = {
+	height: Validation.int(),
+	block: Validation.string(),//todo block dynamic select
+}
+const ValidateFlatStructure = {
+	spacing: Validation.int(),
+	separation: Validation.int(),
+	salt: Validation.int(),
 }
 
 export class FlatGenerator extends DimensionGenerator {
 	settings: FlatGeneratorSettings
 
 	constructor(settings: FlatGeneratorSettings = {
-		layers: [],
+		layers: [
+			{ height: 1, block: 'minecraft:bedrock'},
+			{ height: 3, block: 'minecraft:stone'},
+			{ height: 1, block: 'minecraft:grass_block'},
+		],
 		structures: {
 			stronghold: {
 				distance: 0,
@@ -222,19 +184,20 @@ export class FlatGenerator extends DimensionGenerator {
 
 	static getType = () => 'minecraft:flat'
 	static getStructure = () => ({
+		type: Validation.choiceValue(),
 		settings: {
-			layers: Validation.array(false, undefined, 'Layer'),//todo
-			biome: Validation.string(true),
+			layers: Validation.array(false, ValidateFlatBiome, 'Layer'),
+			biome: Validation.dynamicSelect(false, CTFileType.Biome),
 			structures: {
 				stronghold: {
-					distance: Validation.float(),
-					count: Validation.float(),
-					spread: Validation.float(),
+					distance: Validation.int(),
+					count: Validation.int(),
+					spread: Validation.int(),
 				},
-				structures: Validation.object(false, undefined),//todo
+				structures: Validation.object(false, ValidateFlatStructure, Validation.select(false, MinecraftData.Structures)),//todo
 			},
-			lakes: Validation.boolean(),
-			features: Validation.boolean(),
+			lakes: Validation.boolean(true),
+			features: Validation.boolean(true),
 		}
 	})
 	getStructure = () => FlatGenerator.getStructure()
@@ -246,7 +209,9 @@ export class DebugGenerator extends DimensionGenerator {
 	}
 
 	static getType = () => 'minecraft:debug'
-	static getStructure = () => null
+	static getStructure = () => ({
+		type: Validation.choiceValue()
+	})
 	getStructure = () => DebugGenerator.getStructure()
 }
 

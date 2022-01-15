@@ -6,12 +6,9 @@
 
 <script>
 import {ipcRenderer} from "electron"
-import path from "path";
 import {ConfigManager} from "@/js/storage";
 import {config, setConfigManager} from "@/js/state";
 import {EventList} from "@/js/events";
-import DataPack from "@/js/CustomTerrain/DataPack";
-import fs from "fs";
 import {getRouteForFile} from "@/js/path";
 import CustomTerrain from "@/js/CustomTerrain/CustomTerrain";
 import ControlBar from "@/components/ControlBar";
@@ -47,18 +44,18 @@ export default {
 			if (this.$route.meta.page === 'custom-terrain') {
 				if (type === 'import') {
 					const zipPath = await ipcRenderer.invoke(EventList.SELECT_FILE, 'Open datapack')
-					const datapack = await DataPack.createFromZip(zipPath)
-					config.value.customTerrain.add('datapacks', datapack.getWithoutData())
+					const datapack = await CustomTerrain.fromDatapack(zipPath)
+					config.value.customTerrain.add('datapacks', datapack.id)
 					config.value.customTerrain.save()
-					const userData = await ipcRenderer.invoke(EventList.getPath, 'userData')
-					const filePath = path.join(userData, 'Data', 'custom_terrain/packs', datapack.id + '.datapack')
-					fs.writeFileSync(filePath, JSON.stringify(datapack), 'utf8')
+				}
+				if (type === 'save') {
+					console.log('save ctfile')
 				}
 			}
 		})
 
 		this.ready = true
-	}
+	},
 }
 </script>
 
