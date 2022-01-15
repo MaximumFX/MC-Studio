@@ -3,13 +3,18 @@
 		<div class="overlay d-flex align-items-center justify-content-center">
 			<h3><i class="far fa-pencil"></i></h3>
 		</div>
-		<img :src="`data:image/png;base64, ` + base64" :alt="alt" class="img-fluid" :width="width">
+		<img v-if="base64" :src="`data:image/png;base64, ` + base64" :alt="alt" class="img-fluid" :width="width">
+		<div v-else :style="{width: width + 'px'}">
+			<MCIcon class="fs-1 mx-auto d-block"/>
+		</div>
 	</div>
 </template>
 
 <script>
+import MCIcon from "@/components/MCIcon";
 export default {
 	name: "EditableImage",
+	components: {MCIcon},
 	props: {
 		base64: String,
 		alt: {
