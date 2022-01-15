@@ -324,8 +324,8 @@ function JsonModel(name, rawModel, texturesReference, clipUVs) {
 					if (!element.faces[face].hasOwnProperty('texture'))
 						throw new Error('Couldn\'t find "texture" property for "' + face + '" face in element "' + index + '".')
 					if (!element.faces[face].hasOwnProperty('uv')) {
-						console.error('Couldn\'t find "uv" property for "' + face + '" face in element "' + index + '".')
-						element.faces[face].uv = [0, 0, 16, 16]//TODO worldspace
+						console.warn('Couldn\'t find "uv" property for "' + face + '" face in element "' + index + '".')
+						element.faces[face].uv = [0, 0, 16, 16]//TODO worldspace?
 					}
 					if (element.faces[face].uv.length !== 4)
 						throw new Error(`The "uv" property for "${face}" face in element "${index}" is invalid (got "${element.faces[face].uv}").`)
