@@ -1,7 +1,8 @@
 // import * as THREE from 'three'
+const version = '1.18-rc3'
 
 export const CompileModel = async (id, state, namespace = 'minecraft') => {
-	let blockState = require(`@/assets/minecraft/1.16.4/assets/${namespace}/blockstates/${id}.json`)
+	let blockState = require(`@/assets/minecraft/${version}/assets/${namespace}/blockstates/${id}.json`)
 	let selection = []
 	if (blockState.hasOwnProperty('variants')) {
 		let variants = Object.entries(blockState.variants)
@@ -41,7 +42,7 @@ export const CompileModel = async (id, state, namespace = 'minecraft') => {
 	console.groupCollapsed(id)
 	console.log(id, state, namespace)
 	console.log('blockState', blockState)
-	selection.map(s => {
+	selection = selection.map(s => {
 		if (Array.isArray(s)) {
 			console.log('isArray', s.length)
 			return s[Math.floor(Math.random() * s.length)]//TODO support weighted
@@ -61,9 +62,9 @@ export const CompileModel = async (id, state, namespace = 'minecraft') => {
 	const loadParent = (m, transform) => new Promise(async resolve => {
 		let parent = {}
 		if (m.parent.includes(':'))
-			parent = require(`@/assets/minecraft/1.16.4/assets/${m.parent.split(':')[0]}/models/${m.parent.split(':')[1]}.json`)
+			parent = require(`@/assets/minecraft/${version}/assets/${m.parent.split(':')[0]}/models/${m.parent.split(':')[1]}.json`)
 		else if (!m.parent.startsWith('builtin'))
-			parent = require(`@/assets/minecraft/1.16.4/assets/minecraft/models/${m.parent}.json`)
+			parent = require(`@/assets/minecraft/${version}/assets/minecraft/models/${m.parent}.json`)
 
 		if (parent.hasOwnProperty('parent')) await loadParent(parent, transform)
 
@@ -84,7 +85,8 @@ export const CompileModel = async (id, state, namespace = 'minecraft') => {
 	let parentHasElements = model.elements.length
 	let looped = false
 	for (const m of selection) {
-		let json = require(`@/assets/minecraft/1.16.4/assets/${m.model.split(':')[0]}/models/${m.model.split(':')[1]}.json`)
+		console.log('m', m)
+		let json = require(`@/assets/minecraft/${version}/assets/${m.model.split(':')[0]}/models/${m.model.split(':')[1]}.json`)
 		console.log('json', m, json)
 
 		if (m.hasOwnProperty('x'))
