@@ -1,18 +1,22 @@
-import Vector3 from "@/js/OSM/Vector3"
+import Vector3 from "@/js/OSM/math/Vector3"
 
 //https://github.com/EngineHub/WorldEdit/blob/bb3245e3a08f1c801e0d43768800d472ef0896a2/worldedit-core/src/main/java/com/sk89q/worldedit/math/BlockVector3.java#L35
 export default class BlockVector3 {
-	constructor(x, y, z) {
+	x: number
+	y: number
+	z: number
+
+	constructor(x: number, y: number, z: number) {
 		this.x = Math.round(x)
 		this.y = Math.round(y)
 		this.z = Math.round(z)
 	}
 
-	at = (x, y, z) => new BlockVector3(Math.floor(x), Math.floor(y), Math.floor(z))
+	at = (x: number, y: number, z: number) => new BlockVector3(Math.floor(x), Math.floor(y), Math.floor(z))
 
 	toVector3 = () => new Vector3(this.x, this.y, this.z)
 
-	equals = v2 => this.x === v2.x && this.y === v2.y && this.z === v2.z
+	equals = (v2: BlockVector3) => this.x === v2.x && this.y === v2.y && this.z === v2.z
 
 	/**
 	 * Gets the minimum components of two vectors.
@@ -20,7 +24,7 @@ export default class BlockVector3 {
 	 * @param v2 the second vector
 	 * @return BlockVector3
 	 */
-	getMinimum = v2 => new BlockVector3(
+	getMinimum = (v2: BlockVector3) => new BlockVector3(
 		Math.min(this.x, v2.x),
 		Math.min(this.y, v2.y),
 		Math.min(this.z, v2.z)
@@ -32,7 +36,7 @@ export default class BlockVector3 {
 	 * @param v2 the second vector
 	 * @return BlockVector3
 	 */
-	getMaximum = v2 => new BlockVector3(
+	getMaximum = (v2: BlockVector3) => new BlockVector3(
 		Math.max(this.x, v2.x),
 		Math.max(this.y, v2.y),
 		Math.max(this.z, v2.z)
@@ -44,5 +48,5 @@ export default class BlockVector3 {
 	 * @param other the other vector
 	 * @return a new vector
 	 */
-	add = other => new BlockVector3(this.x + other.x, this.y + other.y, this.z + other.z)
+	add = (other: BlockVector3) => new BlockVector3(this.x + other.x, this.y + other.y, this.z + other.z)
 }

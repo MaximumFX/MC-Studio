@@ -1,10 +1,18 @@
 //https://github.com/EngineHub/WorldEdit/blob/bb3245e3a08f1c801e0d43768800d472ef0896a2/worldedit-core/src/main/java/com/sk89q/worldedit/math/Vector3.java
+import BlockVector3 from "@/js/OSM/math/BlockVector3";
+
 export default class Vector3 {
-	constructor(x, y, z) {
+	x: number
+	y: number
+	z: number
+
+	constructor(x: number, y: number, z: number) {
 		this.x = x
 		this.y = y
 		this.z = z
 	}
+
+	equals = (v2: Vector3) => this.x === v2.x && this.y === v2.y && this.z === v2.z
 
 	/**
 	 * Subtract another vector from this vector and return the result
@@ -13,15 +21,20 @@ export default class Vector3 {
 	 * @param other the other vector
 	 * @return a new vector
 	 */
-	subtract = other => new Vector3(this.x - other.x, this.y - other.y, this.z - other.z);
+	subtract = (other: Vector3) => new Vector3(this.x - other.x, this.y - other.y, this.z - other.z);
 
 	/**
 	 * Divide this vector by another vector on each component.
 	 *
-	 * @param other the other vector
+	 * @param other the other vector | n the value to divide by
 	 * @return a new vector
 	 */
-	divide = other => new Vector3(this.x / other.x, this.y / other.y, this.z / other.z)
+	divide = (other: Vector3 | number) => {
+		if (other instanceof Vector3)
+			return new Vector3(this.x / other.x, this.y / other.y, this.z / other.z)
+		else
+			return new Vector3(this.x / other, this.y / other, this.z / other)
+	}
 
 	/**
 	 * Gets the dot product of this and another vector.
@@ -29,7 +42,7 @@ export default class Vector3 {
 	 * @param other the other vector
 	 * @return the dot product of this and the other vector
 	 */
-	dot = other => this.x * other.x + this.y * other.y + this.z * other.z;
+	dot = (other: Vector3 | BlockVector3) => this.x * other.x + this.y * other.y + this.z * other.z;
 
 	/**
 	 * Gets the cross product of this and another vector.
@@ -37,7 +50,7 @@ export default class Vector3 {
 	 * @param other the other vector
 	 * @return the cross product of this and the other vector
 	 */
-	cross = other => new Vector3(
+	cross = (other: Vector3) => new Vector3(
 		this.y * other.z - this.z * other.y,
 		this.z * other.x - this.x * other.z,
 		this.x * other.y - this.y * other.x

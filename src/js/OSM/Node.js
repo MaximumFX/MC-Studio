@@ -19,9 +19,12 @@ export default class OSMNode {
 	static fromXML(xml) {
 		const options = {
 			tags: OSM.getTagsObj(xml.getElementsByTagName('tag'))
-		};
+		}
 		// OSM Info
-		[...xml.attributes].forEach(attr => options[attr.name] = attr.value);
+		for (let i = 0; i < xml.attributes.length; i++) {
+			const attr = xml.attributes[i]
+			options[attr.name] = attr.value
+		}
 
 		return new OSMNode(options)
 	}

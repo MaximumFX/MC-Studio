@@ -1,6 +1,8 @@
 import OSM from "@/js/OSM/OSM";
 
 export default class Way {
+	nodes
+
 	constructor(options = {}) {
 		this.id = options.id
 		this.user = options.user
@@ -14,14 +16,25 @@ export default class Way {
 		this.tags = options.tags
 	}
 
+	setNodes = nodes => {
+		this.nodes = nodes
+	}
+
 	static fromXML(xml) {
 		const options = {
-			refs: [...xml.getElementsByTagName('nd')].map(nd => nd.getAttribute('ref')),
+			refs: [],
 			tags: OSM.getTagsObj(xml.getElementsByTagName('tag'))
-		};
+		}
+		const nd = xml.getElementsByTagName('nd')
+		for (let i = 0; i < nd.length; i++) {
+			options.refs.push(nd[i].getAttribute('ref'))
+		}
 		// OSM Info
-		[...xml.attributes].forEach(attr => options[attr.name] = attr.value);
-
+		for (let i = 0; i < xml.attributes.length; i++) {
+			const attr = xml.attributes[i]
+			options[attr.name] = attr.value
+		}
+		// [...xml.attributes].forEach(attr => options[attr.name] = attr.value)
 		return new Way(options)
 	}
 }
