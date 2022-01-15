@@ -1,7 +1,8 @@
 import OSMSchematic from "@/js/OSM/OSMSchematic";
 import OSM from "@/js/OSM/OSM";
-import { app, ipcMain, dialog, Menu } from 'electron'
+import {app, dialog, ipcMain, Menu} from 'electron'
 import {getMenu} from "@/js/menu";
+import path from "path";
 
 export default class Events  {
 	#mainWindow
@@ -14,6 +15,8 @@ export default class Events  {
 		// Get file paths from renderer
 		ipcMain.handle(EventList.getPath, (event, arg) =>	arg === 'appPath' ? app.getAppPath() : app.getPath(arg))
 		ipcMain.on(EventList.getPath, (event, arg) => event.returnValue =	arg === 'appPath' ? app.getAppPath() : app.getPath(arg))
+
+		ipcMain.on(EventList.isDevelopment, (event) => event.returnValue =	process.env.NODE_ENV !== 'production' || process.argv.includes('--dev'))
 
 		// Saved
 		ipcMain.handle(EventList.setSaved, (event, saved = false) => {
@@ -30,10 +33,11 @@ export default class Events  {
 		})
 
 		// Dialogs
-		ipcMain.handle('openFileDialog', () => dialog.showOpenDialog(mainWindow, {
+		ipcMain.handle('openFileDialog', (event, filters = []) => dialog.showOpenDialog(mainWindow, {
 			properties: [
 				'openFile'
-			]
+			],
+			filters
 		}))
 		ipcMain.handle(EventList.SELECT_FILE, (event, msg = 'Open') => new Promise((res, rej) => {
 			dialog.showOpenDialog(mainWindow, {
@@ -97,11 +101,12 @@ export default class Events  {
 
 export const EventList = {
 	getPath: 'getPath',
+	isDevelopment: 'isDevelopment',
 	setActivePage: 'setActivePage',
 
 	SELECT_FILE: 'selectFile',
 	OPEN_FOLDER: 'openFolder',
-	dialogQuestion: 'dialogQuestion',
+	dialog: 'dialog',
 	setSaved: 'setSaved',
 	isSaved: 'isSaved',
 
