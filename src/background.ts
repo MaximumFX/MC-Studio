@@ -1,15 +1,15 @@
 'use strict'
 
-import {app, protocol, BrowserWindow, Menu, dialog} from 'electron'
+import {app, BrowserWindow, dialog, Menu, protocol} from 'electron'
 import {createProtocol} from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, {VUEJS_DEVTOOLS} from 'electron-devtools-installer'
 import Events from './js/events'
 import {getMenu} from "./js/menu"
-import { getRouteForFile } from './js/path'
+import {getRouteForFile} from './js/path'
 import path from "path";
 import {Question} from "@/js/electron/Dialogs";
 
-const isDevelopment = process.env.NODE_ENV !== 'production'
+const isDevelopment = process.env.NODE_ENV !== 'production' || process.argv.includes('--dev')
 
 app.setPath('userData',
 	path.join(app.getPath('appData'), 'MaximumFX', 'MC Studio')
@@ -26,8 +26,10 @@ async function createWindow(file?: string) {
 		height: 630,
 		minWidth: 1000,
 		minHeight: 630,
+		titleBarStyle: "hidden",
 		webPreferences: {
 			nodeIntegration: (process.env.ELECTRON_NODE_INTEGRATION as unknown) as boolean,
+			contextIsolation: false,
 		}
 	})
 
