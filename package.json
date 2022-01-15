@@ -1,6 +1,6 @@
 {
 	"name": "mc-studio",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"private": true,
 	"description": "A tool to help you edit and create i.e. datapacks for Minecraft",
 	"author": {
@@ -16,7 +16,7 @@
 		"serve": "vue-cli-service serve",
 		"build": "vue-cli-service build",
 		"lint": "vue-cli-service lint",
-		"electron:build": "vue-cli-service electron:build",
+		"electron:build": "vue-cli-service electron:build --mac --win",
 		"electron:serve": "vue-cli-service electron:serve",
 		"dist": "electron-builder",
 		"pack": "electron-builder --dir",
