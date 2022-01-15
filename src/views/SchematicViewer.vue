@@ -1,6 +1,6 @@
 <template>
-	<div id="schematic-viewer">
-		<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-mcs-secondary">
+	<main id="schematic-viewer">
+		<nav class="navbar navbar-expand-lg navbar-dark bg-mcs-secondary">
 			<div class="container-fluid justify-content-start">
 				<div class="navbar-expand" id="navbarNav">
 					<ul class="navbar-nav me-2">
@@ -9,13 +9,13 @@
 						</li>
 					</ul>
 				</div>
-				<form class="d-flex">
+				<form class="ms-auto d-flex">
 					<button class="btn btn-success" type="button" @click="openFile">Open file</button>
 				</form>
 			</div>
 		</nav>
-		<div id="container"></div>
-	</div>
+		<section ref="container"></section>
+	</main>
 </template>
 
 <script>
@@ -29,6 +29,8 @@ import fs from "fs"
 import { parse } from "prismarine-nbt"
 import { JsonModel } from '@/minecraft/JsonModel'
 import { CompileModel } from '@/minecraft/CompileModel'
+
+const version = '1.18-rc3'
 
 let camera, scene, renderer, stats
 let objects = []
@@ -114,7 +116,7 @@ export default {
 							// 	if (!textures.hasOwnProperty(name)) {
 							// 		const texture = new THREE.TextureLoader()
 							// 			.load(
-							// 				require(`@/assets/minecraft/1.16.4/assets/${name.split(':')[0]}/textures/block/${material.split(':')[1]}.png`),
+							// 				require(`@/assets/minecraft/${version}/assets/${name.split(':')[0]}/textures/block/${material.split(':')[1]}.png`),
 							// 				t => this.onLoad(t),
 							// 				e => this.onProgress(e),
 							// 				e => this.onError(e)
@@ -134,7 +136,7 @@ export default {
 							for (let yi = 0; yi < size[1]; yi++) {
 								for (let zi = 0; zi < size[2]; zi++) {
 									let i = (yi * size[2] + zi) * size[0] + xi
-									let block = parsed.value.BlockData.value[i]
+									let block = Math.abs(parsed.value.BlockData.value[i])
 									blocks.push({
 										x: xi, y: yi, z: zi,
 										paletteId: block,
@@ -178,10 +180,10 @@ export default {
 								let id = e.includes(':') ? e.split(':')[1] : e
 								if (!textures.hasOwnProperty(`${namespace}:${id}`)) {
 									let tex = {
-										texture: require(`@/assets/minecraft/1.16.4/assets/${namespace}/textures/${id}.png`)
+										texture: require(`@/assets/minecraft/${version}/assets/${namespace}/textures/${id}.png`)
 									}
-									if (fs.existsSync(`@/assets/minecraft/1.16.4/assets/${namespace}/textures/${id}.png.mcmeta`)) {
-										tex.mcmeta = fs.readFileSync(`@/assets/minecraft/1.16.4/assets/${namespace}/textures/${id}.png.mcmeta`)
+									if (fs.existsSync(`@/assets/minecraft/${version}/assets/${namespace}/textures/${id}.png.mcmeta`)) {
+										tex.mcmeta = fs.readFileSync(`@/assets/minecraft/${version}/assets/${namespace}/textures/${id}.png.mcmeta`)
 									}
 									textures[`${namespace}:${id}`] = tex
 								}
@@ -195,30 +197,33 @@ export default {
 
 					blocks.forEach(b => {
 						let model = models.find(m => m.paletteId === b.paletteId)
-						let tex = []
-						Object.entries(model.model.textures).forEach(e => {
-							if (!e[1].startsWith('#')) {//TODO
-								let namespace = e[1].includes(':') ? e[1].split(':')[0] : 'minecraft'
-								let id = e[1].includes(':') ? e[1].split(':')[1] : e[1]
-								tex.push({
-									name: e[0],
-									...textures[`${namespace}:${id}`]
-								})
-							}
-							else tex.push({name: e[0], ref: e[1]})
-						})
-						// console.log('Block', b, model, tex)
-						const jsonModel = new JsonModel('name', model.model, tex)
-						// console.log(jsonModel)
-						const g = new THREE.Group()
-						g.add(jsonModel)
-						// g.position.y = - jsonModel.getBBox().min.y/16
-						g.position.set(
-							b.x - Math.floor(size[0]/2) - .5,
-							b.y + .5,
-							b.z - Math.floor(size[2]/2) - .5)
-						g.scale.setScalar(1/16)
-						scene.add(g)
+						if (model) {
+							let tex = []
+							Object.entries(model.model.textures).forEach(e => {
+								if (!e[1].startsWith('#')) {//TODO
+									let namespace = e[1].includes(':') ? e[1].split(':')[0] : 'minecraft'
+									let id = e[1].includes(':') ? e[1].split(':')[1] : e[1]
+									tex.push({
+										name: e[0],
+										...textures[`${namespace}:${id}`]
+									})
+								}
+								else tex.push({name: e[0], ref: e[1]})
+							})
+							// console.log('Block', b, model, tex)
+							const jsonModel = new JsonModel('name', model.model, tex)
+							// console.log(jsonModel)
+							const g = new THREE.Group()
+							g.add(jsonModel)
+							// g.position.y = - jsonModel.getBBox().min.y/16
+							g.position.set(
+								b.x - Math.floor(size[0] / 2) - .5,
+								b.y + .5,
+								b.z - Math.floor(size[2] / 2) - .5)
+							g.scale.setScalar(1 / 16)
+							scene.add(g)
+						}
+						else console.warn('[SchematicViewer openFile] Couldn\'t find model for block.', b)
 					})
 					// blocks.filter(b => b.material !== 'minecraft:air').forEach(block => {
 					// 	console.log(block)
@@ -246,7 +251,7 @@ export default {
 			})
 		},
 		init() {
-			let container = document.getElementById('container')
+			let container = this.$refs.container
 
 			renderer = new THREE.WebGLRenderer({ antialias: true })
 			renderer.setPixelRatio(window.devicePixelRatio)
@@ -765,10 +770,10 @@ export default {
 		// let textures = Object.entries(json.textures).map(a => {
 		// 	let tex = {
 		// 		name: a[0],
-		// 		texture: require(`@/assets/minecraft/1.16.4/assets/minecraft/textures/${a[1]}.png`)
+		// 		texture: require(`@/assets/minecraft/${version}/assets/minecraft/textures/${a[1]}.png`)
 		// 	}
-		// 	if (fs.existsSync(`@/assets/minecraft/1.16.4/assets/minecraft/textures/${a[1]}.png.mcmeta`)) {
-		// 		tex.mcmeta = fs.readFileSync(`@/assets/minecraft/1.16.4/assets/minecraft/textures/${a[1]}.png.mcmeta`)
+		// 	if (fs.existsSync(`@/assets/minecraft/${version}/assets/minecraft/textures/${a[1]}.png.mcmeta`)) {
+		// 		tex.mcmeta = fs.readFileSync(`@/assets/minecraft/${version}/assets/minecraft/textures/${a[1]}.png.mcmeta`)
 		// 	}
 		// 	return tex
 		// })
@@ -788,15 +793,7 @@ export default {
 </script>
 
 <style scoped>
-#schematic-viewer {
-	min-height: 100vh;
-	padding-top: 3.5rem;
-	position: relative;
-	display: flex;
-	flex-direction: column;
-}
-#container {
-	flex: 1 0 auto;
+section {
 	position: relative;
 }
 </style>
