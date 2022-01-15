@@ -93,6 +93,11 @@ export default {
 	--green: var(--bs-success);
 
 	--shadow: 0 .25rem .25rem rgba(0, 0, 0, .32);
+
+	--syntax-int: #f7e066;
+	--syntax-float: #d1925a;
+	--syntax-string: #24b1bd;
+	--syntax-enum: #af64bf;
 }
 
 body {
@@ -130,7 +135,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Page Scrolling */
 main {
-	height: 100vh;
+	height: calc(100vh - var(--title-bar-height));
 	display: flex;
 	flex-direction: column;
 }
@@ -170,12 +175,13 @@ section {
 }
 .card {
 	--card-bg: var(--foreground);
-	--card-header: var(--secondary);
+	--card-header: var(--foreground-lighter);
 	background-color: var(--card-bg);
 	box-shadow: var(--shadow);
 }
 .card .card {
 	--card-bg: var(--foreground-lighter);
+	--card-header: var(--secondary);
 	border: 2px solid var(--card-header);
 }
 .card-interactive:hover,
@@ -268,6 +274,9 @@ section {
 	color: var(--text);
 	background-color: var(--foreground-lighter);
 }
+.card-header .nav-tabs .nav-link.active {
+	background-color: var(--card-bg);
+}
 
 
 /* Dropdown */
@@ -317,6 +326,14 @@ section {
 	background-color: transparent;
 	color: var(--text);
 }
+.form-control:disabled {
+	background-color: var(--secondary);
+	border-color: var(--tertiary);
+	color: var(--border);
+}
+.form-control-color {
+	min-width: 3rem;
+}
 .input-group-text {
 	background-color: var(--bg);
 	border-color: var(--border);
@@ -345,5 +362,9 @@ section {
 /* UTILITIES */
 .overflow-y-auto {
 	overflow-y: auto;
+}
+.hidden-link {
+	color: inherit !important;
+	text-decoration: inherit;
 }
 </style>
