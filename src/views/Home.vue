@@ -55,6 +55,27 @@ export default {
 		return {
 			items: [
 				{
+					name: 'OpenStreetMap Exporter',
+					backgroundImage: require('@/assets/images/osm.png'),
+					link: '/osm-exporter',
+					status: '70% Finished',
+					enabled: true,
+				},
+				{
+					name: 'NBT Editor',
+					backgroundImage: require('@/assets/images/nbt-editor.png'),
+					link: '/nbt-editor',
+					status: '70% Finished',
+					enabled: true,
+				},
+				{
+					name: 'Schematic viewer',
+					backgroundImage: require('@/assets/images/schematic.png'),//'https://ephtracy.github.io/image/snap2016-03-07-02-53-23.png',
+					link: '/schematic-viewer',
+					status: '40% Finished',
+					enabled: isDevelopment,
+				},
+				{
 					name: 'Worldgen',
 					backgroundImage: 'https://external-preview.redd.it/hq0k-wDNgFKDTYqpNu_LyYMUADru8V_Ms7aLL3WeMJ4.jpg?auto=webp&s=b5f39df155e057432de3878710787b54f99f2d11',
 					link: '/custom-terrain',
