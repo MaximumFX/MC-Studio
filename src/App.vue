@@ -1,5 +1,6 @@
 <template>
 	<router-view/>
+	<AppProgress/>
 </template>
 
 <script>
@@ -11,9 +12,13 @@ import {EventList} from "@/js/events";
 import DataPack from "@/js/CustomTerrain/DataPack";
 import fs from "fs";
 import {getRouteForFile} from "@/js/path";
+import CustomTerrain from "@/js/CustomTerrain/CustomTerrain";
+import ControlBar from "@/components/ControlBar";
+import AppProgress from "@/components/AppProgress";
 
 export default {
 	name: 'App',
+	components: {AppProgress, ControlBar},
 	data() {
 		return {
 			ready: false

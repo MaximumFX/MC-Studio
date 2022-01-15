@@ -61,20 +61,23 @@ export default class Events  {
 				else rej(new Error('no-folder-selected'))
 			})
 		}))
-		ipcMain.handle(EventList.dialogQuestion, (event, msg = 'Open') => new Promise((res, rej) => {
-			dialog.showMessageBox(mainWindow, {
-				type: 'question',
-				buttons: ['Yes', 'No'],
-				cancelId: 1,
-				title: 'Confirm',
-				message: msg
-			}).catch(e => rej(e)).then(result => {
-				if (result.filePaths[0] != null) {
-					res(result.filePaths[0])
+
+		ipcMain.handle(EventList.dialog, (event, dia) => {
+			if (dia.type === 'saveFile') {
+				if (dia.defaultPath)
+					dia.defaultPath = path.join(dia.defaultPath, dia.defaultName)
+				else {
+					dia.defaultPath = path.join(app.getPath('downloads'), dia.defaultName)
 				}
-				else rej(new Error('no-folder-selected'))
-			})
-		}))
+				return dialog.showSaveDialog(dia)
+			}
+			return dialog.showMessageBox(mainWindow, dia)
+		})
+
+		// Progress Bar
+		ipcMain.handle(EventList.setProgressBar, (event, stage = 0) => {
+			mainWindow.setProgressBar(stage)
+		})
 
 		// OSM
 		ipcMain.handle(EventList.CREATE_OSM_SCHEMATIC, (event, arg) => {
@@ -101,6 +104,8 @@ export const EventList = {
 	dialogQuestion: 'dialogQuestion',
 	setSaved: 'setSaved',
 	isSaved: 'isSaved',
+
+	setProgressBar: 'setProgressBar',
 
 	CREATE_OSM_SCHEMATIC: 'createOSMSchematic',
 
