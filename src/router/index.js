@@ -1,6 +1,7 @@
 import { ipcRenderer } from "electron"
 import {createRouter, createWebHistory, createWebHashHistory} from "vue-router"
 import {EventList} from "@/js/events";
+import store from "@/store";
 
 import Home from "@/views/Home"
 import SchematicViewer from "@/views/SchematicViewer"
@@ -52,26 +53,7 @@ const routes = [
 			page: 'osm-exporter'
 		}
 	},
-	{
-		path: '/custom-terrain',
-		name: 'Worldgen',
-		component: CustomTerrain,
-		meta: {
-			page: 'custom-terrain'
-		}
-	},
-	{
-		path: '/custom-terrain/editor/:cteId',
-		name: 'Worldgen Editor',
-		component: CustomTerrainEditor,
-		meta: {
-			page: 'custom-terrain'
-		},
-		children: [
-			{ path: '', component: CTEHome },
-			{ path: ':namespace', component: CTENamespace },
-		]
-	},
+	...customTerrainRouter,
 ]
 
 const router = createRouter({
@@ -83,15 +65,17 @@ router.beforeEach((to, from, next) => {
 	const nearestWithTitle = to.matched.slice().reverse().find(r => r.meta && r.meta.title)
 	const nearestWithName = to.matched.slice().reverse().find(r => r.name)
 	const previousNearestWithMeta = from.matched.slice().reverse().find(r => r.meta && r.meta.title)
+	let title = 'MC Studio'
 	if (nearestWithTitle) {
-		document.title = nearestWithTitle.meta.title
+		title = nearestWithTitle.meta.title
 	}
 	else if (nearestWithName) {
-		document.title = nearestWithName.name + (nearestWithName.name === 'MC Studio' ? '' : ' - MC Studio')
+		title = nearestWithName.name
 	}
 	else if (previousNearestWithMeta) {
-		document.title = previousNearestWithMeta.meta.title
+		title = previousNearestWithMeta.meta.title
 	}
+	store.commit('setTitle', title)
 
 	ipcRenderer.invoke(EventList.setActivePage, to.path, to.meta.page)
 
