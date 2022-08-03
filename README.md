@@ -2,26 +2,29 @@
 
 ## Progress
 
-### OpenStreetMap Exporter
+### World Viewer
 **Todo:**
-* Add configuration
-* Add slicing into multiple schematics
+* Add render button for maps with 16+ tiles
+* Export map
+* Import resource pack for map
+* Export 3D model
+* Datapack's biomes
+* Mod's blocks & biomes
+* Right click menu to reload tile
+* Load only specific regions/chunks
+* Fix holes in water
 
-### NBT Editor
+### Minecraft Assets
 **Todo:**
-* The editing part
-* Save edited files
-* Create new file
+* NBT Viewer
+* Sound preview
+* Add all recipe types
 
 ### Schematic Viewer
 **Todo:**
-* Fix some broken models
+* Fix uv rotation
+* Fix rotation rescale
+* Add uvlock
 * Add 3D viewer settings
 * Add render functionality
 * Add [LGL Tracer](https://lgltracer.com) renderer
-
-### Worldgen
-**Todo:**
-* Exporting
-* Editing data
-* So so much more

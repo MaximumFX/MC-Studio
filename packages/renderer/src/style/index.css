@@ -1,0 +1,337 @@
+@import "fonts.css";
+@import "forms.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+:root {
+	--title-bar-height: 28px;
+	--border-size: 2px;
+	--title-bar: calc(var(--title-bar-height) + var(--border-size));
+
+	--text: #fff;
+	--border: #888;
+	--bg: #333;
+	--secondary: #292929;
+	--tertiary: #4f4f4f;
+	--foreground: #121212;
+	--foreground-lighter: #1c1c1c;
+
+	/* Primary */
+	--secondary-primary: #1c2129;
+	--foreground-lighter-primary: #13171c;
+
+	/* Warning */
+	--secondary-warning: #29261c;
+	--foreground-lighter-warning: #1c1a13;
+
+	/* Info */
+	--secondary-info: #1c2729;
+	--foreground-lighter-info: #131b1c;
+
+	--green: var(--bs-success);
+
+	--shadow: 0 .25rem .25rem rgba(0, 0, 0, .32);
+
+	--syntax-int: #f7e066;
+	--syntax-float: #d1925a;
+	--syntax-string: #24b1bd;
+	--syntax-enum: #af64bf;
+}
+
+body {
+	font-family: 'Open Sans', sans-serif;
+	background-color: var(--bg);
+	color: var(--text);
+	-webkit-font-smoothing: antialiased;
+	-webkit-overflow-scrolling: touch;
+}
+
+/* DEFAULT STYLES */
+
+h1, h2, h3, h4, h5, h6 {
+	@apply font-bold leading-normal mt-0 mb-2
+}
+h1 {
+	@apply text-5xl
+}
+h2 {
+	@apply text-4xl
+}
+h3 {
+	@apply text-3xl
+}
+h4 {
+	@apply text-2xl
+}
+h5 {
+	@apply text-xl
+}
+h6 {
+	@apply text-lg
+}
+
+a {
+	cursor: pointer;
+	transition: color .15s;
+}
+a:focus {
+	outline: none;
+}
+
+hr {
+	margin: 1rem 0;
+	color: inherit;
+	background-color: currentColor;
+	border: 0;
+	opacity: .25;
+}
+hr:not([size]) {
+	height: 1px;
+}
+
+/* Tables */
+thead {
+	text-align: left;
+	/*background-color: var(--foreground);*/
+}
+th, td {
+	@apply p-2
+}
+thead tr {
+	@apply border-b-2 border-gray-600
+}
+tr:not(:last-child) {
+	@apply border-b border-gray-700
+}
+
+/* Scroll bars */
+::-webkit-scrollbar {
+	width: .75rem;
+	height: .75rem;
+}
+::-webkit-scrollbar-thumb {
+	background: var(--tertiary);
+	border-radius: 0;
+	border: 0;
+}
+::-webkit-scrollbar-thumb:hover {
+	background: var(--tertiary);
+}
+::-webkit-scrollbar-track {
+	background: var(--secondary);
+	border-radius: 0;
+}
+::-webkit-scrollbar-corner {
+	background: var(--secondary);
+}
+
+.stretched-link::after {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 1;
+	content: "";
+}
+
+/* Page Scrolling */
+main {
+	height: calc(100vh - var(--title-bar-height));
+	display: flex;
+	flex-direction: column;
+}
+section {
+	flex: 1;
+	overflow-y: auto;
+}
+
+/* UTILITY */
+.pixelated {
+	-ms-interpolation-mode: nearest-neighbor;
+	image-rendering: pixelated;
+}
+.no-select {
+	user-select: none;
+}
+.no-click {
+	pointer-events: none;
+}
+.no-interact {
+	user-select: none;
+	pointer-events: none;
+}
+.cursor-pointer {
+	cursor: pointer;
+}
+
+/* Colors */
+.bg-mcs-bg {
+	background-color: var(--bg) !important;
+}
+.bg-mcs-secondary {
+	background-color: var(--secondary) !important;
+}
+.bg-mcs-foreground {
+	background-color: var(--foreground) !important;
+}
+.text-muted {
+	color: #8f8f8f !important;
+}
+
+/* Dark backgrounds */
+/*.card {*/
+/*	display: flex;*/
+/*	flex-direction: column;*/
+/*	min-width: 0;*/
+/*	word-wrap: break-word;*/
+
+/*	--card-bg: var(--foreground);*/
+/*	--card-header: var(--foreground-lighter);*/
+/*	background-color: var(--card-bg);*/
+/*	box-shadow: var(--shadow);*/
+/*}*/
+/*.card-body {*/
+/*	flex: 1 1 auto;*/
+/*	padding: 1rem 1rem;*/
+/*}*/
+
+.card .card {
+	--card-bg: var(--foreground-lighter);
+	--card-header: var(--secondary);
+	border: 2px solid var(--card-header);
+}
+.card-interactive:hover,
+.card-header {
+	background-color: var(--card-header);
+}
+.card-thumbnail {
+	background-size: cover;
+	background-position: center;
+}
+
+.table-dark {
+	--bs-table-bg: var(--foreground);
+	--bs-table-striped-bg: #2c3034;
+	--bs-table-striped-color: #fff;
+	--bs-table-active-bg: #373b3e;
+	--bs-table-active-color: #fff;
+	--bs-table-hover-bg: var(--tertiary);
+	--bs-table-hover-color: #fff;
+	color: #fff;
+	border-color: #373b3e;
+}
+/*.table>tbody>tr>* {*/
+/*	background-color: var(--secondary);*/
+/*}*/
+
+/* Card Colors */
+.card .card-primary,
+.card .card-primary .card:not([class*=card-]) {
+	--card-bg: var(--foreground-lighter-primary);
+	--card-header: var(--secondary-primary);
+}
+.card .card-warning,
+.card .card-warning .card:not([class*=card-]) {
+	--card-bg: var(--foreground-lighter-warning);
+	--card-header: var(--secondary-warning);
+}
+.card .card-info,
+.card .card-info .card:not([class*=card-]) {
+	--card-bg: var(--foreground-lighter-info);
+	--card-header: var(--secondary-info);
+}
+
+/* Nav */
+.navbar {
+	/*box-shadow: var(--shadow);*/
+	/*z-index: 1000;*/
+}
+
+.nav-select {
+	/*flex-wrap: nowrap;*/
+	/*overflow-x: auto;*/
+}
+.nav-select .nav-link {
+	color: var(--border);
+	position: relative;
+	padding-bottom: 1rem;
+	white-space: nowrap;
+	cursor: pointer;
+}
+.nav-select .nav-link::before {
+	content: "";
+	position: absolute;
+	bottom: 0;
+	left: 50%;
+	transform: translateX(-50%);
+	height: .25rem;
+	width: 1.5rem;
+}
+.nav-select .nav-link:hover,
+.nav-select .nav-link.active,
+.nav-select .nav-link:active {
+	color: var(--text);
+}
+.nav-select .nav-link.active::before,
+.nav-select .nav-link:active::before {
+	background-color: var(--green);
+}
+
+/* Nav tabs */
+.nav-tabs {
+	border: none;
+}
+.nav-tabs .nav-link {
+	border-radius: 0;
+	border: none;
+}
+.nav-tabs .nav-item.show .nav-link,
+.nav-tabs .nav-link.active {
+	color: var(--text);
+	background-color: var(--foreground-lighter);
+}
+.card-header .nav-tabs .nav-link.active {
+	background-color: var(--card-bg);
+}
+
+
+/* Dropdown */
+.dropdown-menu {
+	border-radius: 0;
+	background-color: var(--foreground);
+	border: 2px solid var(--secondary);
+}
+.dropdown-menu .dropdown-item {
+	color: var(--text);
+}
+.dropdown-menu .dropdown-item:hover {
+	background-color: var(--foreground-lighter);
+}
+.dropdown-menu .dropdown-item:focus,
+.dropdown-menu .dropdown-item.active,
+.dropdown-menu .dropdown-item:active {
+	background-color: var(--green);
+}
+
+/* Collapse */
+.btn-collapse i {
+	transition: .35s ease;
+}
+.btn-collapse[aria-expanded=false] i {
+	transform: rotate(-90deg);
+}
+
+
+
+/* UTILITIES */
+.overflow-y-auto {
+	overflow-y: auto;
+}
+.hidden-link {
+	color: inherit !important;
+	text-decoration: inherit;
+}
