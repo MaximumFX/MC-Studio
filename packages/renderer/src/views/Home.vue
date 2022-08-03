@@ -79,7 +79,7 @@ export default {
 				},
 				{
 					name: 'Minecraft Assets',
-					backgroundImage: this.$image('@/images/osm.png'),
+					backgroundImage: this.$image('@/images/mc-assets.png'),
 					link: '/mc-assets',
 					status: '75% Finished',
 					enabled: true,
